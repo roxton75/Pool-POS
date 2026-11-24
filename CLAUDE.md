@@ -148,53 +148,57 @@ Available → Occupied (timer starts) → Paused (optional) → Completed → Pa
 ### Reference: CosyPOS
 
 Adapt the CosyPOS layout patterns:
-- **Dark charcoal workspace** (`#1A1C1E` dark / `#F5F6F7` light)
-- **Compact left navigation sidebar** (72px collapsed, 240px expanded)
+- **Dark charcoal workspace** (`#111111` dark / `#F3F5F4` light)
+- **Compact left navigation sidebar** (68px collapsed, 170px expanded)
 - **Central resource grid** — responsive card grid (tables, waitlist, customers)
 - **Right contextual details panel** — slides in on selection (320px tablet, full-screen phone)
 - **Bottom operational status area** — live timer, active sessions count, alerts
 
-### Color System
+### Color System (Current Implementation)
 
 #### Dark Theme (Primary)
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `bg-primary` | `#1A1C1E` | Main workspace background |
-| `bg-secondary` | `#222428` | Cards, panels, sidebar |
-| `bg-tertiary` | `#2A2D31` | Hover/pressed states, inputs |
-| `fg-primary` | `#F0F1F3` | Primary text |
-| `fg-secondary` | `#9AA0A8` | Secondary text, labels |
-| `fg-muted` | `#6B6F76` | Placeholders, disabled |
-| `accent-teal` | `#2DD4BF` | Primary actions, active states |
-| `accent-ice-blue` | `#7DD3FC` | Info, links, secondary actions |
-| `accent-sage` | `#A3E6B5` | Success, completed, positive |
-| `accent-amber` | `#FDE047` | Warnings, pending, timers |
-| `accent-rose` | `#FDA4AF` | Errors, destructive |
-| `border-subtle` | `#34373C` | Dividers, card borders |
-| `border-focus` | `#2DD4BF` | Focus rings, active borders |
+| `background` | `#111111` | Main workspace background |
+| `surface` | `#222222` | Cards, panels, sidebar |
+| `surfaceSecondary` | `#303030` | Hover/pressed states, inputs |
+| `border` | `#272C2E00` | Dividers, card borders (transparent) |
+| `text.primary` | `#F4F5F4` | Primary text |
+| `text.secondary` | `#A6A9AA` | Secondary text, labels |
+| `text.muted` | `#777E80` | Placeholders, disabled |
+| `accent` | `#AFCBC5` | Primary actions, active states (muted teal) |
+| `accentSecondary` | `#C2DBE9` | Info, links, secondary actions (ice blue) |
+| `sage` | `#CFDDDB` | Success, completed, positive |
+| `status.available` | `#65B99A` | Available tables |
+| `status.occupied` | `#E3BE78` | Occupied tables |
+| `status.paused` | `#A9C5D2` | Paused sessions |
+| `status.error` | `#D87979` | Errors, destructive |
 
 #### Light Theme
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `bg-primary` | `#F5F6F7` | Main workspace background |
-| `bg-secondary` | `#FFFFFF` | Cards, panels, sidebar |
-| `bg-tertiary` | `#E8EAED` | Hover/pressed states, inputs |
-| `fg-primary` | `#1A1C1E` | Primary text |
-| `fg-secondary` | `#52565C` | Secondary text, labels |
-| `fg-muted` | `#8A8E94` | Placeholders, disabled |
-| `accent-teal` | `#0D9488` | Primary actions, active states |
-| `accent-ice-blue` | `#0284C7` | Info, links, secondary actions |
-| `accent-sage` | `#16A34A` | Success, completed, positive |
-| `accent-amber` | `#CA8A04` | Warnings, pending, timers |
-| `accent-rose` | `#E11D48` | Errors, destructive |
-| `border-subtle` | `#D0D4D9` | Dividers, card borders |
-| `border-focus` | `#0D9488` | Focus rings, active borders |
+| `background` | `#F3F5F4` | Main workspace background |
+| `surface` | `#FFFFFF` | Cards, panels, sidebar |
+| `surfaceSecondary` | `#E9EEEC` | Hover/pressed states, inputs |
+| `border` | `#DDE2E3` | Dividers, card borders |
+| `text.primary` | `#111315` | Primary text |
+| `text.secondary` | `#676767` | Secondary text, labels |
+| `text.muted` | `#929999` | Placeholders, disabled |
+| `accent` | `#AFCBC5` | Primary actions, active states |
+| `accentSecondary` | `#C2DBE9` | Info, links, secondary actions |
+| `sage` | `#CFDDDB` | Success, completed, positive |
+| `status.available` | `#279B75` | Available tables |
+| `status.occupied` | `#B98935` | Occupied tables |
+| `status.paused` | `#6C9CB3` | Paused sessions |
+| `status.error` | `#C65C5C` | Errors, destructive |
+
+**Note:** Current colors differ from CLAUDE.md specification. Implementation uses muted teal (`#AFCBC5`) as primary accent instead of bright teal (`#2DD4BF`). Background is pure black (`#111111`) vs charcoal (`#1A1C1E`). Update theme tokens when implementing final design system.
 
 ### Typography
 
-**Font Family:** Google Sans (400 Regular, 500 Medium, 600 SemiBold, 700 Bold)
+**Font Family:** Google Sans (400 Regular, 500 Medium, 600 SemiBold, 700 Bold) — loaded via expo-font
 
 | Style | Size | Weight | Line Height | Letter Spacing |
 |-------|------|--------|-------------|----------------|
@@ -284,7 +288,7 @@ Base unit: 4px
 
 | Component | Phone (Portrait) | Phone (Landscape) | Tablet (Portrait) | Tablet (Landscape) |
 |-----------|------------------|-------------------|-------------------|---------------------|
-| Sidebar | Bottom tab bar | Collapsed (72px) | Collapsed (72px) | Expanded (240px) |
+| Sidebar | Bottom tab bar | Collapsed (68px) | Collapsed (68px) | Expanded (170px) |
 | Resource Grid | Single column | 2 columns | 2 columns | 3–4 columns |
 | Details Panel | Full-screen modal | Full-screen modal | Right panel (320px) | Right panel (320px) |
 | Status Bar | Bottom fixed | Bottom fixed | Bottom fixed | Bottom fixed |
@@ -324,7 +328,7 @@ Base unit: 4px
 | Interaction | Animation |
 |-------------|-----------|
 | Table card press | Scale 0.98 → 1.0 (150ms), background ripple |
-| Sidebar expand/collapse | Width spring (350ms), icon rotate |
+| Sidebar expand/collapse | Width spring (320ms), icon translate (280ms) |
 | Details panel slide | TranslateX spring (350ms), fade backdrop |
 | Session timer tick | Number flip (100ms), pulse on minute change |
 | Waitlist promotion | Slide up + highlight (400ms), sound |
@@ -361,7 +365,7 @@ Base unit: 4px
 
 ---
 
-## Folder Structure
+## Current Folder Structure
 
 ```
 qzone-manager/
@@ -372,82 +376,73 @@ qzone-manager/
 │   │   ├── GoogleSans-Regular.ttf
 │   │   ├── GoogleSans-SemiBold.ttf
 │   │   └── OFL.txt
-│   └── images/
-│       ├── android-icon-background.png
-│       ├── android-icon-foreground.png
-│       ├── android-icon-monochrome.png
-│       ├── expo-badge-white.png
-│       ├── expo-badge.png
-│       ├── expo-logo.png
-│       ├── favicon.png
-│       ├── icon.png
-│       ├── logo-glow.png
-│       ├── react-logo.png
-│       ├── react-logo@2x.png
-│       ├── react-logo@3x.png
-│       ├── splash-icon.png
-│       └── tabIcons/
+│   ├── images/
+│   │   ├── android-icon-background.png
+│   │   ├── android-icon-monochrome.png
+│   │   └── ...
+│   └── logos/
+│       ├── enhanced.avif
+│       └── enhanced-op.avif
 ├── src/
 │   ├── app/
-│   │   ├── _layout.tsx              # Root layout, providers
-│   │   ├── index.tsx                # Redirects to dashboard
+│   │   ├── _layout.tsx              # Root layout: ThemeProvider, Stack, font loading
+│   │   ├── index.tsx                # Redirects to /(main)/dashboard
 │   │   └── (main)/                  # Main tab navigation group
-│   │       ├── _layout.tsx          # Tab navigator config
-│   │       ├── dashboard.tsx        # Overview: active sessions, stats, quick actions
-│   │       ├── sessions.tsx         # Table management & live sessions
-│   │       ├── waiting-list.tsx     # Queue management per table type
-│   │       ├── customers.tsx        # Customer directory & profiles
-│   │       ├── transactions.tsx     # Payment history & POS
-│   │       ├── reports.tsx          # Analytics & export
-│   │       ├── expenses.tsx         # Expense tracking & budgets
-│   │       └── settings.tsx         # Club config: rates, tables, taxes
+│   │       ├── _layout.tsx          # Layout: Sidebar, TopHeader, Stack, BottomStatusBar
+│   │       ├── dashboard.tsx        # ScreenPlaceholder (Dashboard)
+│   │       ├── bookings.tsx         # ScreenPlaceholder (Bookings)
+│   │       ├── waitlist.tsx         # ScreenPlaceholder (Waitlist)
+│   │       ├── booking-history.tsx  # ScreenPlaceholder (Booking History)
+│   │       ├── analytics.tsx        # ScreenPlaceholder (Analytics)
+│   │       ├── customers.tsx        # ScreenPlaceholder (Customers)
+│   │       ├── food.tsx             # ScreenPlaceholder (Food & Beverages)
+│   │       └── settings.tsx         # ScreenPlaceholder (Settings)
 │   ├── components/
-│   │   ├── ui/                      # Primitive reusable components
+│   │   ├── layout/
+│   │   │   ├── Sidebar.tsx          # Collapsible animated sidebar (68/170px)
+│   │   │   ├── TopHeader.tsx        # Header with logo, date, theme toggle, notifications
+│   │   │   ├── BottomStatusBar.tsx  # Status bar: online/offline, resource counts
+│   │   │   ├── layout.types.ts      # TypeScript interfaces for layout props
 │   │   │   └── index.ts
-│   │   ├── layout/                  # Layout shells (sidebar, grid, panels)
+│   │   ├── shared/
+│   │   │   ├── ScreenPlaceholder.tsx # Placeholder screen component
 │   │   │   └── index.ts
-│   │   └── shared/                  # Cross-feature components
-│   │       └── index.ts
-│   ├── features/                    # Domain-specific modules
+│   │   └── ui/
+│   │       └── index.ts             # Empty - primitive components to be created
+│   ├── features/                    # Domain-specific modules (empty index.ts files)
 │   │   ├── dashboard/
-│   │   │   └── index.ts
 │   │   ├── sessions/
-│   │   │   └── index.ts
 │   │   ├── waiting-list/
-│   │   │   └── index.ts
 │   │   ├── customers/
-│   │   │   └── index.ts
 │   │   ├── transactions/
-│   │   │   └── index.ts
 │   │   ├── reports/
-│   │   │   └── index.ts
 │   │   ├── expenses/
-│   │   │   └── index.ts
 │   │   └── settings/
-│   │       └── index.ts
-│   ├── theme/                       # Design tokens
-│   │   ├── colors.ts
-│   │   ├── typography.ts
-│   │   ├── spacing.ts
-│   │   ├── shadows.ts
-│   │   ├── motion.ts
+│   ├── theme/                       # Design tokens (partial implementation)
+│   │   ├── colors.ts                # ✓ darkColors, lightColors implemented
+│   │   ├── typography.ts            # ✗ Empty - needs implementation
+│   │   ├── spacing.ts               # ✗ Empty - needs implementation
+│   │   ├── shadows.ts               # ✗ Empty - needs implementation
+│   │   ├── motion.ts                # ✗ Empty - needs implementation
+│   │   ├── ThemeProvider.tsx        # ✓ ThemeContext with dark/light toggle
+│   │   └── index.ts                 # ✓ Exports colors, fonts
+│   ├── hooks/
+│   │   ├── use-theme.ts             # ⚠ Broken - imports from non-existent @/constants/theme
 │   │   └── index.ts
-│   ├── hooks/                       # Custom React hooks
-│   │   └── index.ts
-│   ├── stores/                      # Zustand stores
-│   │   └── index.ts
-│   ├── services/                    # Cross-cutting services
-│   │   └── index.ts
-│   ├── repositories/                # Data access layer
-│   │   └── index.ts
+│   ├── stores/
+│   │   └── index.ts                 # Empty - Zustand stores to be created
+│   ├── services/
+│   │   └── index.ts                 # Empty - services to be created
+│   ├── repositories/
+│   │   └── index.ts                 # Empty - repositories to be created
 │   ├── database/
 │   │   ├── migrations/
-│   │   │   └── 001_initial_schema.sql
+│   │   │   └── 001_initial_schema.sql  # Empty - schema to be created
 │   │   └── index.ts
-│   ├── types/                       # TypeScript types
-│   │   └── index.ts
-│   └── utils/                       # Pure utilities
-│       └── index.ts
+│   ├── types/
+│   │   └── index.ts                 # Empty - types to be created
+│   └── utils/
+│       └── index.ts                 # Empty - utilities to be created
 ├── CLAUDE.md
 ├── app.json
 ├── package.json
@@ -456,14 +451,36 @@ qzone-manager/
 
 ---
 
-## Current State
+## Current State (As Analyzed)
 
-- ✅ Project initialized with Expo SDK 58
-- ✅ Dependencies installed (see package.json)
-- ✅ Google Sans fonts in `assets/fonts/`
-- ✅ Folder structure reorganized to match specification
-- ✅ Root layout updated for (main) tab group
-- ✅ Index redirects to dashboard
-- ✅ This CLAUDE.md documented
+### ✅ Completed
+- Expo SDK 58 project initialized with all dependencies
+- Google Sans fonts in `assets/fonts/` and loaded in RootLayout
+- Expo Router with (main) route group and 8 screens
+- ThemeProvider with dark/light mode toggle
+- Layout components: Sidebar (animated collapse/expand), TopHeader, BottomStatusBar
+- ScreenPlaceholder for empty screen states
+- Folder structure matches specification
+- TypeScript config with strict mode
 
-**Next:** ChatGPT will implement UI screens, components, and theme system. Claude will be invoked for backend integration as needed.
+### ⚠️ Issues to Fix
+1. **Broken hook**: `src/hooks/use-theme.ts` imports from `@/constants/theme` which doesn't exist — should use `src/theme/ThemeProvider`
+2. **Empty theme tokens**: `spacing.ts`, `typography.ts`, `shadows.ts`, `motion.ts` are empty
+3. **Color mismatch**: Current implementation uses `#111111`/`#AFCBC5` vs CLAUDE.md spec `#1A1C1E`/`#2DD4BF`
+4. **Empty backend files**: database migration, types, stores, services, repositories, utils all empty
+5. **No navigation tabs**: MainLayout uses Stack only — no bottom tab bar for phone
+6. **Logo asset**: TopHeader references `../../../assets/logos/enhanced.avif` — verify exists
+
+### 📋 Next Steps (for ChatGPT/UI Implementation)
+1. Fix `use-theme.ts` hook to use ThemeProvider context
+2. Implement complete theme token system (spacing, typography, shadows, motion)
+3. Create primitive UI components in `src/components/ui/`
+4. Build feature components in `src/features/`
+5. Implement actual screen content replacing ScreenPlaceholders
+6. Add bottom tab navigation for phone layouts
+7. Create database schema and repositories
+8. Implement Zustand stores with offline-first sync
+
+---
+
+**Status**: Initial scaffold complete. Ready for UI implementation by ChatGPT. Backend integration by Claude on request.

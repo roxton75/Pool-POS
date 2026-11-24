@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Settings,
   Users,
+  Utensils,
 } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Animated, Pressable, StyleSheet, View } from "react-native";
@@ -20,6 +21,7 @@ const navigationItems = [
   { label: "History", route: "/booking-history", icon: Clock },
   { label: "Analytics", route: "/analytics", icon: BarChart3 },
   { label: "Customers", route: "/customers", icon: Users },
+  { label: "Eatery ", route: "/food", icon: Utensils },
   { label: "Settings", route: "/settings", icon: Settings },
 ];
 
