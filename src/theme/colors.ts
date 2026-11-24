@@ -6,12 +6,20 @@ export const darkColors = {
 
   text: {
     primary: "#F4F5F4",
+    black: "#000000",
+    white: "#FFFFFF",
     secondary: "#A6A9AA",
     muted: "#777E80",
   },
 
-  accent: "#AFCBC5",
-  accentSecondary: "#C2DBE9",
+  button: {
+    primary: "#F0F0F0",
+    secondary: "#63AEDA",
+    tertiary: "#CFDDDB",
+  },
+
+  accent: "#71dac3",
+  accentSecondary: "#9AC5DD",
   sage: "#CFDDDB",
 
   status: {
@@ -25,23 +33,31 @@ export const darkColors = {
 export const lightColors = {
   background: "#F3F5F4",
   surface: "#FFFFFF",
-  surfaceSecondary: "#E9EEEC",
+  surfaceSecondary: "#E4E4E4",
   border: "#DDE2E3",
 
   text: {
     primary: "#111315",
+    black: "#000000",
+    white: "#FFFFFF",
     secondary: "#676767",
     muted: "#929999",
   },
 
-  accent: "#AFCBC5",
-  accentSecondary: "#C2DBE9",
-  sage: "#CFDDDB",
+  button: {
+    primary: "#181818",
+    secondary: "#C2DBE9",
+    tertiary: "#CFDDDB",
+  },
+
+  accent: "#3E9280",
+  accentSecondary: "#2A7DAD",
+  sage: "#A07EA0",
 
   status: {
     available: "#279B75",
     occupied: "#B98935",
     paused: "#6C9CB3",
-    error: "#C65C5C",
+    error: "#CC5757",
   },
 };

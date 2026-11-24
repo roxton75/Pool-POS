@@ -297,17 +297,17 @@ export default function Dashboard() {
               <ThemedText variant="label">Status Variants</ThemedText>
 
               <View style={styles.badgeGroup}>
-                <ThemedBadge label="Available" variant="success" dot />
+                <ThemedBadge label="Available" variant="success" />
 
-                <ThemedBadge label="Occupied" variant="warning" dot />
+                <ThemedBadge label="Occupied" variant="warning" />
 
-                <ThemedBadge label="Cancelled" variant="error" dot />
+                <ThemedBadge label="Cancelled" variant="error" />
 
-                <ThemedBadge label="Paused" variant="info" dot />
+                <ThemedBadge label="Paused" variant="info" />
 
-                <ThemedBadge label="Pending" variant="neutral" dot />
+                <ThemedBadge label="Pending" variant="neutral" />
 
-                <ThemedBadge label="Active" variant="accent" dot />
+                <ThemedBadge label="Active" variant="active"  />
               </View>
 
               <View style={styles.divider} />
