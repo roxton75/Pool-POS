@@ -66,8 +66,8 @@ export function ThemedInput({
           progress.value,
           [0, 1],
           [
-            focused ? darkColors.accent : darkColors.border,
-            focused ? lightColors.accent : lightColors.border,
+            focused ? darkColors.sage : darkColors.border,
+            focused ? lightColors.sage : lightColors.border,
           ],
         ),
   }));

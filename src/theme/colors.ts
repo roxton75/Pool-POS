@@ -14,19 +14,19 @@ export const darkColors = {
 
   button: {
     primary: "#F0F0F0",
-    secondary: "#63AEDA",
+    secondary: "#369FDB",
     tertiary: "#CFDDDB",
   },
 
   accent: "#71dac3",
-  accentSecondary: "#9AC5DD",
-  sage: "#CFDDDB",
+  accentSecondary: "#B7D6E7",
+  sage: "#a895a8",
 
   status: {
     available: "#65B99A",
     occupied: "#E3BE78",
     paused: "#A9C5D2",
-    error: "#D87979",
+    error: "#d35f5f",
   },
 };
 
@@ -46,12 +46,12 @@ export const lightColors = {
 
   button: {
     primary: "#181818",
-    secondary: "#C2DBE9",
+    secondary: "#008CDD",
     tertiary: "#CFDDDB",
   },
 
   accent: "#3E9280",
-  accentSecondary: "#2A7DAD",
+  accentSecondary: "#4289B3",
   sage: "#A07EA0",
 
   status: {
