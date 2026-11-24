@@ -27,7 +27,6 @@ const navigationItems = [
   { label: "History", route: "/booking-history", icon: Clock },
   { label: "Customers", route: "/customers", icon: Users },
   { label: "Eatery", route: "/food", icon: Utensils },
-  { label: "Settings", route: "/settings", icon: Settings },
 ];
 
 export default function Sidebar({
@@ -99,7 +98,7 @@ export default function Sidebar({
   }));
 
   const iconTranslate = collapseProgress.interpolate({
-    inputRange: [0, 1],
+    inputRange: [0, 1.25],
     outputRange: [0, 4.5],
   });
 
@@ -115,6 +114,72 @@ export default function Sidebar({
 
   return (
     <Animated.View style={[styles.widthContainer, { width }]}>
+      {/* <Reanimated.View style={[styles.sidebar, sidebarStyle]}>
+        <View style={styles.navigation}>
+          {navigationItems.map(({ label, route, icon: Icon }) => {
+            const active =
+              activePath === `/(main)${route}` || activePath === route;
+
+            return (
+              <Pressable
+                key={route}
+                accessibilityRole="button"
+                accessibilityLabel={label}
+                accessibilityState={{ selected: active }}
+                onPress={() => onNavigate(route)}
+                style={({ pressed }) => [
+                  styles.navItem,
+                  pressed && styles.pressed,
+                ]}
+              >
+                {active && (
+                  <Reanimated.View
+                    pointerEvents="none"
+                    style={[
+                      StyleSheet.absoluteFill,
+                      styles.activeBackground,
+                      activeItemStyle,
+                    ]}
+                  />
+                )}
+
+                <Animated.View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      transform: [{ translateX: iconTranslate }],
+                    },
+                  ]}
+                >
+                  <Icon
+                    size={19}
+                    strokeWidth={1.9}
+                    color={active ? "#9DCAC0" : "#929999"}
+                  />
+                </Animated.View>
+
+                <Animated.View
+                  style={{
+                    flex: 1,
+                    opacity: labelOpacity,
+                    transform: [{ translateX: labelTranslate }],
+                  }}
+                >
+                  <Reanimated.Text
+                    numberOfLines={1}
+                    style={[
+                      styles.navLabel,
+                      active ? primaryTextStyle : secondaryTextStyle,
+                    ]}
+                  >
+                    {label}
+                  </Reanimated.Text>
+                </Animated.View>
+              </Pressable>
+            );
+          })}
+        </View>
+      </Reanimated.View> */}
       <Reanimated.View style={[styles.sidebar, sidebarStyle]}>
         <View style={styles.navigation}>
           {navigationItems.map(({ label, route, icon: Icon }) => {
@@ -144,13 +209,10 @@ export default function Sidebar({
                   />
                 )}
 
-            
                 <Animated.View
                   style={[
                     styles.iconContainer,
-                    {
-                      transform: [{ translateX: iconTranslate }],
-                    },
+                    { transform: [{ translateX: iconTranslate }] },
                   ]}
                 >
                   <Icon
@@ -160,7 +222,6 @@ export default function Sidebar({
                   />
                 </Animated.View>
 
-      
                 <Animated.View
                   style={{
                     flex: 1,
@@ -182,6 +243,69 @@ export default function Sidebar({
             );
           })}
         </View>
+
+        {/* Settings pinned to bottom */}
+        <View style={styles.bottomNavigation}>
+          {(() => {
+            const active =
+              activePath === "/(main)/settings" || activePath === "/settings";
+
+            return (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Settings"
+                accessibilityState={{ selected: active }}
+                onPress={() => onNavigate("/settings")}
+                style={({ pressed }) => [
+                  styles.navItem,
+                  pressed && styles.pressed,
+                ]}
+              >
+                {active && (
+                  <Reanimated.View
+                    pointerEvents="none"
+                    style={[
+                      StyleSheet.absoluteFill,
+                      styles.activeBackground,
+                      activeItemStyle,
+                    ]}
+                  />
+                )}
+
+                <Animated.View
+                  style={[
+                    styles.iconContainer,
+                    { transform: [{ translateX: iconTranslate }] },
+                  ]}
+                >
+                  <Settings
+                    size={19}
+                    strokeWidth={1.9}
+                    color={active ? "#9DCAC0" : "#929999"}
+                  />
+                </Animated.View>
+
+                <Animated.View
+                  style={{
+                    flex: 1,
+                    opacity: labelOpacity,
+                    transform: [{ translateX: labelTranslate }],
+                  }}
+                >
+                  <Reanimated.Text
+                    numberOfLines={1}
+                    style={[
+                      styles.navLabel,
+                      active ? primaryTextStyle : secondaryTextStyle,
+                    ]}
+                  >
+                    Settings
+                  </Reanimated.Text>
+                </Animated.View>
+              </Pressable>
+            );
+          })()}
+        </View>
       </Reanimated.View>
     </Animated.View>
   );
@@ -198,9 +322,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 10,
     overflow: "hidden",
+    justifyContent: "space-between",
   },
   navigation: {
     gap: 7,
+  },
+  bottomNavigation: {
+    marginTop: "auto",
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#5E5E5E4F",
   },
   navItem: {
     height: 43,
@@ -208,7 +339,7 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     flexDirection: "row",
     paddingVertical: 6,
-    alignItems: "center",
+
     gap: 10,
     paddingHorizontal: 12,
     overflow: "hidden",
@@ -216,7 +347,7 @@ const styles = StyleSheet.create({
 
   iconContainer: {
     width: 22,
-    
+
     justifyContent: "center",
   },
   activeBackground: {
