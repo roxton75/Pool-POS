@@ -4,33 +4,33 @@
     "slug": "qzone-manager",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logos/enhanced-op.avif",
+    "icon": "./assets/logos/enhanced-op.png",
     "scheme": "qzonemanager",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/logos/enhanced-op.avif"
+      "icon": "./assets/logos/enhanced-op.png"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/logos/enhanced-op.avif",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#111111",
+        "foregroundImage": "./assets/logos/enhanced-op.png",
+        "monochromeImage": "./assets/logos/solid-op.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.rudrx75.qzonemanager"
     },
     "web": {
       "output": "server",
-      "favicon": "./assets/logos/enhanced-op.avif"
+      "favicon": "./assets/logos/enhanced-op.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/logos/enhanced-op.avif",
-          "imageWidth": 76
+          "backgroundColor": "#111111",
+          "image": "./assets/logos/enhanced-op.png",
+          "imageWidth": 120
         }
       ],
       "expo-sqlite",

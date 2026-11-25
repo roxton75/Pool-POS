@@ -73,11 +73,11 @@ export function ThemedButton({
     } as const;
 
     const borders = {
-      primary: [darkColors.button.primary, lightColors.button.primary],
+      primary: [transparent, transparent],
       secondary: [transparent, transparent],
       outline: [darkColors.border, lightColors.border],
       ghost: [darkColors.text.secondary, lightColors.text.secondary],
-      danger: [darkColors.status.error, lightColors.status.error],
+      danger: [transparent, transparent],
     } as const;
 
     return {
@@ -115,15 +115,19 @@ export function ThemedButton({
 
   // Keep icon color identical to the button text color.
   const iconColor =
-    variant === "primary" || variant === "secondary"
+    variant === "primary"
       ? mode === "dark"
         ? darkColors.text.black
         : lightColors.text.white
-      : variant === "danger"
-        ? lightColors.background
-        : mode === "dark"
-          ? darkColors.text.primary
-          : lightColors.text.primary;
+      : variant === "secondary"
+        ? mode === "dark"
+          ? darkColors.text.white
+          : lightColors.text.white
+        : variant === "danger"
+          ? lightColors.text.white
+          : mode === "dark"
+            ? darkColors.text.secondary
+            : lightColors.text.secondary;
 
   const renderIcon = (icon: ReactNode) => {
     if (!isValidElement(icon)) return icon;
@@ -150,6 +154,8 @@ export function ThemedButton({
           height: buttonHeight,
           paddingHorizontal: size === "sm" ? spacing.md : spacing.lg,
           borderRadius: borderRadius.lg,
+          borderColor: darkColors.text.secondary,
+          borderWidth: variant === "outline" || variant === "ghost" ? 1 : 0,
           opacity: isDisabled ? 0.5 : pressed ? 0.8 : 1,
           transform: [{ scale: pressed && !isDisabled ? 0.98 : 1 }],
         },

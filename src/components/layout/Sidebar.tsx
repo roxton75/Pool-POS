@@ -35,6 +35,8 @@ export default function Sidebar({
   onNavigate,
 }: SidebarProps) {
   const { progress } = useTheme();
+  const { mode } = useTheme();
+  const colors = mode === "dark" ? darkColors : lightColors;
 
   const [width] = useState(() => new Animated.Value(collapsed ? 68 : 170));
 
@@ -114,72 +116,6 @@ export default function Sidebar({
 
   return (
     <Animated.View style={[styles.widthContainer, { width }]}>
-      {/* <Reanimated.View style={[styles.sidebar, sidebarStyle]}>
-        <View style={styles.navigation}>
-          {navigationItems.map(({ label, route, icon: Icon }) => {
-            const active =
-              activePath === `/(main)${route}` || activePath === route;
-
-            return (
-              <Pressable
-                key={route}
-                accessibilityRole="button"
-                accessibilityLabel={label}
-                accessibilityState={{ selected: active }}
-                onPress={() => onNavigate(route)}
-                style={({ pressed }) => [
-                  styles.navItem,
-                  pressed && styles.pressed,
-                ]}
-              >
-                {active && (
-                  <Reanimated.View
-                    pointerEvents="none"
-                    style={[
-                      StyleSheet.absoluteFill,
-                      styles.activeBackground,
-                      activeItemStyle,
-                    ]}
-                  />
-                )}
-
-                <Animated.View
-                  style={[
-                    styles.iconContainer,
-                    {
-                      transform: [{ translateX: iconTranslate }],
-                    },
-                  ]}
-                >
-                  <Icon
-                    size={19}
-                    strokeWidth={1.9}
-                    color={active ? "#9DCAC0" : "#929999"}
-                  />
-                </Animated.View>
-
-                <Animated.View
-                  style={{
-                    flex: 1,
-                    opacity: labelOpacity,
-                    transform: [{ translateX: labelTranslate }],
-                  }}
-                >
-                  <Reanimated.Text
-                    numberOfLines={1}
-                    style={[
-                      styles.navLabel,
-                      active ? primaryTextStyle : secondaryTextStyle,
-                    ]}
-                  >
-                    {label}
-                  </Reanimated.Text>
-                </Animated.View>
-              </Pressable>
-            );
-          })}
-        </View>
-      </Reanimated.View> */}
       <Reanimated.View style={[styles.sidebar, sidebarStyle]}>
         <View style={styles.navigation}>
           {navigationItems.map(({ label, route, icon: Icon }) => {
@@ -218,7 +154,7 @@ export default function Sidebar({
                   <Icon
                     size={19}
                     strokeWidth={1.9}
-                    color={active ? "#9DCAC0" : "#929999"}
+                    color={active ? colors.gold : colors.text.secondary}
                   />
                 </Animated.View>
 
@@ -281,7 +217,7 @@ export default function Sidebar({
                   <Settings
                     size={19}
                     strokeWidth={1.9}
-                    color={active ? "#9DCAC0" : "#929999"}
+                    color={active ? colors.gold : colors.text.secondary}
                   />
                 </Animated.View>
 
@@ -351,7 +287,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   activeBackground: {
-    borderRadius: 9,
+    borderRadius: 8,
   },
   navLabel: {
     flex: 1,

@@ -20,7 +20,8 @@ export const darkColors = {
 
   accent: "#71dac3",
   accentSecondary: "#B7D6E7",
-  sage: "#a895a8",
+  sage: "#ee7fb3",
+  gold: "#D4B16A",
 
   status: {
     available: "#65B99A",
@@ -52,7 +53,8 @@ export const lightColors = {
 
   accent: "#3E9280",
   accentSecondary: "#4289B3",
-  sage: "#A07EA0",
+  sage: "#DB6EA4",
+  gold: "#e7ad61",
 
   status: {
     available: "#279B75",

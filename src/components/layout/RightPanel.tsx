@@ -1,15 +1,15 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import {
   Bell,
   ChevronLeft,
   ChevronRight,
-  Clock3,
   ListChecks,
   ReceiptText,
-  Users,
 } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import type { ElementRef } from "react";
+import type { ComponentRef } from "react";
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   View,
@@ -19,9 +19,8 @@ import {
   type ViewStyle,
 } from "react-native";
 
-import { ThemedBadge, ThemedButton, ThemedCard, ThemedText } from "../shared";
-
-import { spacing, useTheme } from "../../theme";
+import { ThemedCard, ThemedText } from "../shared";
+import { darkColors, lightColors, spacing, useTheme } from "../../theme";
 
 export type RightPanelSection = "waitlist" | "billing" | "alerts";
 
@@ -51,16 +50,16 @@ export default function RightPanel({
   width = 330,
   style,
 }: RightPanelProps) {
-  const { colors } = useTheme();
+  const { mode } = useTheme();
+  const colors = mode === "dark" ? darkColors : lightColors;
 
-  const scrollRef = useRef<ElementRef<typeof ScrollView>>(null);
+  const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
   const [panelWidth, setPanelWidth] = useState(width);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     if (!selectedResource) return;
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveIndex(1);
     scrollRef.current?.scrollTo({
       x: panelWidth,
@@ -68,21 +67,22 @@ export default function RightPanel({
     });
   }, [selectedResource, panelWidth]);
 
+  const navigateTo = (index: number) => {
+    const nextIndex = Math.max(0, Math.min(index, sections.length - 1));
+
+    setActiveIndex(nextIndex);
+
+    scrollRef.current?.scrollTo({
+      x: panelWidth * nextIndex,
+      animated: true,
+    });
+  };
+
   const handleSwipe = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offset = event.nativeEvent.contentOffset.x;
     const index = Math.round(offset / panelWidth);
 
     setActiveIndex(Math.max(0, Math.min(index, sections.length - 1)));
-  };
-
-  const navigateTo = (index: number) => {
-    const nextIndex = Math.max(0, Math.min(index, sections.length - 1));
-
-    setActiveIndex(nextIndex);
-    scrollRef.current?.scrollTo({
-      x: panelWidth * nextIndex,
-      animated: true,
-    });
   };
 
   const activeSection = sections[activeIndex];
@@ -96,42 +96,49 @@ export default function RightPanel({
         if (measuredWidth > 0) setPanelWidth(measuredWidth);
       }}
     >
-      <ThemedCard padding="md" radius="2xl" shadow="sm" style={styles.panel}>
-        {/* PANEL HEADER */}
+      <ThemedCard padding="md" radius="xl" shadow="none" style={styles.panel}>
+        {/* Header */}
         <View style={styles.header}>
+          <Pressable
+            onPress={() => navigateTo(activeIndex - 1)}
+            disabled={activeIndex === 0}
+            hitSlop={8}
+            style={styles.chevronButton}
+          >
+            <ChevronLeft
+              size={19}
+              color={
+                activeIndex === 0 ? colors.text.muted : colors.text.primary
+              }
+            />
+          </Pressable>
+
           <View style={styles.headerTitle}>
             <HeaderIcon size={19} strokeWidth={2} color={colors.accent} />
+
             <ThemedText variant="heading3">{activeSection.title}</ThemedText>
           </View>
 
-          <View style={styles.headerControls}>
-            <ThemedButton
-              title=""
-              size="sm"
-              variant="ghost"
-              leftIcon={<ChevronLeft size={17} color={colors.text.secondary} />}
-              disabled={activeIndex === 0}
-              onPress={() => navigateTo(activeIndex - 1)}
-            />
-
-            <ThemedButton
-              title=""
-              size="sm"
-              variant="ghost"
-              leftIcon={
-                <ChevronRight size={17} color={colors.text.secondary} />
+          <Pressable
+            onPress={() => navigateTo(activeIndex + 1)}
+            disabled={activeIndex === sections.length - 1}
+            hitSlop={8}
+            style={styles.chevronButton}
+          >
+            <ChevronRight
+              size={19}
+              color={
+                activeIndex === sections.length - 1
+                  ? colors.text.muted
+                  : colors.text.primary
               }
-              disabled={activeIndex === sections.length - 1}
-              onPress={() => navigateTo(activeIndex + 1)}
             />
-          </View>
+          </Pressable>
         </View>
 
-        <View
-          style={[styles.headerDivider, { backgroundColor: colors.border }]}
-        />
+        <View style={[styles.divider, { backgroundColor: "#91919134" }]} />
 
-        {/* SWIPEABLE WORKSPACES */}
+        {/* Empty swipeable workspace */}
         <ScrollView
           ref={scrollRef}
           horizontal
@@ -143,251 +150,55 @@ export default function RightPanel({
           decelerationRate="fast"
           style={styles.pager}
         >
-          <View style={{ width: panelWidth }}>
-            <WaitlistWorkspace />
-          </View>
-
-          <View style={{ width: panelWidth }}>
-            <BillingWorkspace resource={selectedResource} />
-          </View>
-
-          <View style={{ width: panelWidth }}>
-            <AlertsWorkspace />
-          </View>
-        </ScrollView>
-
-        {/* PAGE INDICATOR */}
-        <View style={styles.pagination}>
-          {sections.map((section, index) => (
-            <ThemedButton
-              key={section.key}
-              title=""
-              size="sm"
-              variant="ghost"
-              onPress={() => navigateTo(index)}
-              style={[
-                styles.paginationDot,
-                {
-                  backgroundColor:
-                    activeIndex === index
-                      ? colors.accent
-                      : colors.surfaceSecondary,
-                },
-              ]}
-            />
+          {sections.map((section) => (
+            <View key={section.key} style={{ width: panelWidth, flex: 1 }} />
           ))}
-        </View>
+        </ScrollView>
       </ThemedCard>
     </View>
-  );
-}
-
-function WaitlistWorkspace() {
-  return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.workspace}
-    >
-      <View style={styles.summaryRow}>
-        <ThemedText variant="label" color="secondary">
-          WAITING CUSTOMERS
-        </ThemedText>
-        <ThemedBadge label="0 Waiting" variant="neutral" />
-      </View>
-
-      <ThemedCard variant="secondary" padding="xl">
-        <View style={styles.emptyState}>
-          <Users size={30} color="#929999" />
-          <ThemedText variant="heading3">No one in the queue</ThemedText>
-          <ThemedText color="secondary" variant="bodySmall">
-            Customers added to the waitlist will appear here.
-          </ThemedText>
-        </View>
-      </ThemedCard>
-    </ScrollView>
-  );
-}
-
-function BillingWorkspace({
-  resource,
-}: {
-  resource?: SelectedResource | null;
-}) {
-  if (!resource) {
-    return (
-      <View style={styles.emptyState}>
-        <ReceiptText size={30} color="#929999" />
-        <ThemedText variant="heading3">No resource selected</ThemedText>
-        <ThemedText color="secondary" variant="bodySmall">
-          Select a table card on the Dashboard to view its billing details.
-        </ThemedText>
-      </View>
-    );
-  }
-
-  const elapsed = resource.elapsedMinutes ?? 0;
-  const hours = Math.floor(elapsed / 60);
-  const minutes = elapsed % 60;
-
-  return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.workspace}
-    >
-      <View style={styles.summaryRow}>
-        <ThemedText variant="label" color="secondary">
-          CURRENT SESSION
-        </ThemedText>
-
-        <ThemedBadge
-          label={resource.status === "paused" ? "Paused" : "Occupied"}
-          variant={resource.status === "paused" ? "info" : "warning"}
-        />
-      </View>
-
-      <ThemedCard padding="lg">
-        <ThemedText color="secondary" variant="caption">
-          RESOURCE
-        </ThemedText>
-
-        <ThemedText variant="heading2">{resource.name}</ThemedText>
-
-        <View style={styles.detailRow}>
-          <ThemedText color="secondary">Hourly rate</ThemedText>
-          <ThemedText variant="bodyMedium">₹{resource.ratePerHour}</ThemedText>
-        </View>
-
-        <View style={styles.detailRow}>
-          <ThemedText color="secondary">Elapsed time</ThemedText>
-          <View style={styles.inline}>
-            <Clock3 size={14} color="#929999" />
-            <ThemedText variant="bodyMedium">
-              {hours}h {minutes}m
-            </ThemedText>
-          </View>
-        </View>
-      </ThemedCard>
-
-      <ThemedCard variant="secondary" padding="lg">
-        <ThemedText color="secondary" variant="label">
-          CURRENT BILL
-        </ThemedText>
-
-        <ThemedText variant="display">₹{resource.amountDue ?? 0}</ThemedText>
-
-        <ThemedText color="secondary" variant="caption">
-          Estimated amount due
-        </ThemedText>
-      </ThemedCard>
-    </ScrollView>
-  );
-}
-
-function AlertsWorkspace() {
-  return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.workspace}
-    >
-      <View style={styles.summaryRow}>
-        <ThemedText variant="label" color="secondary">
-          NOTIFICATIONS
-        </ThemedText>
-        <ThemedBadge label="All clear" variant="success" />
-      </View>
-
-      <ThemedCard variant="secondary" padding="xl">
-        <View style={styles.emptyState}>
-          <Bell size={30} color="#929999" />
-          <ThemedText variant="heading3">You&apos;re all caught up</ThemedText>
-          <ThemedText color="secondary" variant="bodySmall">
-            Important session and payment alerts will appear here.
-          </ThemedText>
-        </View>
-      </ThemedCard>
-    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexShrink: 0,
-    minHeight: 300,
+    minHeight: 0,
   },
   panel: {
     flex: 1,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: darkColors.border,
   },
   header: {
     minHeight: 42,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     position: "relative",
   },
   headerTitle: {
+    position: "absolute",
+    left: 36,
+    right: 36,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: spacing.sm,
   },
-  headerControls: {
-    position: "absolute",
-    right: 0,
-    flexDirection: "row",
+  chevronButton: {
+    width: 30,
+    height: 30,
     alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    zIndex: 1,
   },
-  headerDivider: {
+  divider: {
     height: 1,
-    marginVertical: spacing.md,
+    marginVertical: spacing.sm,
   },
   pager: {
     flex: 1,
-  },
-  workspace: {
-    flexGrow: 1,
-    gap: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  summaryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: spacing.sm,
-  },
-  emptyState: {
-    flex: 1,
-    minHeight: 190,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: spacing.md,
-    padding: spacing.lg,
-  },
-  detailRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: spacing.lg,
-  },
-  inline: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.xs,
-  },
-  pagination: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: spacing.sm,
-    paddingTop: spacing.md,
-  },
-  paginationDot: {
-    width: 9,
-    height: 9,
-    minHeight: 9,
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    borderRadius: 99,
-    borderWidth: 0,
   },
 });
