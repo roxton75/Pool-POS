@@ -76,7 +76,7 @@ export function ThemedButton({
       primary: [transparent, transparent],
       secondary: [transparent, transparent],
       outline: [darkColors.border, lightColors.border],
-      ghost: [darkColors.text.secondary, lightColors.text.secondary],
+      ghost: [transparent, transparent],
       danger: [transparent, transparent],
     } as const;
 
@@ -155,7 +155,7 @@ export function ThemedButton({
           paddingHorizontal: size === "sm" ? spacing.md : spacing.lg,
           borderRadius: borderRadius.lg,
           borderColor: darkColors.text.secondary,
-          borderWidth: variant === "outline" || variant === "ghost" ? 1 : 0,
+          borderWidth: variant === "outline" ? 1 : 0,
           opacity: isDisabled ? 0.5 : pressed ? 0.8 : 1,
           transform: [{ scale: pressed && !isDisabled ? 0.98 : 1 }],
         },

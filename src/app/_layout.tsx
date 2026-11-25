@@ -4,6 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "react-native";
 import { ThemeProvider, useTheme } from "../theme/ThemeProvider";
+import { DatabaseProvider } from "../database";
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -34,11 +35,12 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <AppStatusBar />
-
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(main)" />
-      </Stack>
+      <DatabaseProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(main)" />
+        </Stack>
+      </DatabaseProvider>
     </ThemeProvider>
   );
 }

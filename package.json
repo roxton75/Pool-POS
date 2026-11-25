@@ -4,6 +4,7 @@
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/ui": "~58.0.29",
+    "@nozbe/watermelondb": "^0.28.0",
     "expo": "~58.0.26",
     "expo-constants": "~58.0.16",
     "expo-crypto": "~58.0.8",
@@ -33,6 +34,7 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.29.7",
     "@types/react": "~19.3.0",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~58.0.4",
