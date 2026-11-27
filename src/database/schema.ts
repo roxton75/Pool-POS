@@ -1,154 +1,43 @@
-import { appSchema, tableSchema } from "@nozbe/watermelondb";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const databaseSchema = appSchema({
-  version: 1,
-  tables: [
-    tableSchema({
-      name: "resources",
-      columns: [
-        { name: "name", type: "string" },
-        { name: "type", type: "string", isIndexed: true },
-        { name: "rate_per_hour", type: "number" },
-        { name: "is_active", type: "boolean" },
-        { name: "is_maintenance", type: "boolean" },
-        { name: "display_order", type: "number" },
-        { name: "created_at", type: "string" },
-        { name: "updated_at", type: "string" },
-      ],
-    }),
-    tableSchema({
-      name: "customers",
-      columns: [
-        { name: "name", type: "string" },
-        { name: "phone", type: "string", isOptional: true, isIndexed: true },
-        { name: "notes", type: "string", isOptional: true },
-        { name: "created_at", type: "string" },
-        { name: "updated_at", type: "string" },
-      ],
-    }),
-    tableSchema({
-      name: "sessions",
-      columns: [
-        { name: "booking_number", type: "string", isIndexed: true },
-        { name: "resource_id", type: "string", isIndexed: true },
-        {
-          name: "customer_id",
-          type: "string",
-          isOptional: true,
-          isIndexed: true,
-        },
-        { name: "customer_name", type: "string", isOptional: true },
-        { name: "customer_phone", type: "string", isOptional: true },
-        { name: "status", type: "string", isIndexed: true },
-        { name: "rate_snapshot", type: "number" },
-        { name: "grace_period_snapshot", type: "number" },
-        { name: "started_at", type: "string" },
-        { name: "ended_at", type: "string", isOptional: true },
-        { name: "total_paused_seconds", type: "number" },
-        { name: "total_amount", type: "number" },
-        { name: "notes", type: "string", isOptional: true },
-        { name: "created_at", type: "string" },
-        { name: "updated_at", type: "string" },
-      ],
-    }),
-    tableSchema({
-      name: "session_pauses",
-      columns: [
-        { name: "session_id", type: "string", isIndexed: true },
-        { name: "paused_at", type: "string" },
-        { name: "resumed_at", type: "string", isOptional: true },
-      ],
-    }),
-    tableSchema({
-      name: "payments",
-      columns: [
-        { name: "session_id", type: "string", isIndexed: true },
-        { name: "amount", type: "number" },
-        { name: "method", type: "string" },
-        { name: "note", type: "string", isOptional: true },
-        { name: "paid_at", type: "string", isIndexed: true },
-      ],
-    }),
-    tableSchema({
-      name: "waitlist",
-      columns: [
-        {
-          name: "customer_id",
-          type: "string",
-          isOptional: true,
-          isIndexed: true,
-        },
-        { name: "customer_name", type: "string" },
-        { name: "customer_phone", type: "string", isOptional: true },
-        { name: "resource_type", type: "string", isOptional: true },
-        { name: "queue_position", type: "number" },
-        { name: "status", type: "string", isIndexed: true },
-        { name: "notes", type: "string", isOptional: true },
-        { name: "created_at", type: "string" },
-        { name: "updated_at", type: "string" },
-      ],
-    }),
-    tableSchema({
-      name: "settings",
-      columns: [
-        { name: "key", type: "string", isIndexed: true },
-        { name: "value", type: "string" },
-        { name: "updated_at", type: "string" },
-      ],
-    }),
-    tableSchema({
-      name: "food_categories",
-      columns: [
-        { name: "name", type: "string" },
-        { name: "display_order", type: "number" },
-        { name: "is_active", type: "boolean" },
-        { name: "created_at", type: "string" },
-      ],
-    }),
-    tableSchema({
-      name: "food_items",
-      columns: [
-        {
-          name: "category_id",
-          type: "string",
-          isOptional: true,
-          isIndexed: true,
-        },
-        { name: "name", type: "string" },
-        { name: "price", type: "number" },
-        { name: "is_available", type: "boolean" },
-        { name: "created_at", type: "string" },
-        { name: "updated_at", type: "string" },
-      ],
-    }),
-    tableSchema({
-      name: "food_orders",
-      columns: [
-        { name: "order_number", type: "string", isIndexed: true },
-        { name: "customer_name", type: "string", isOptional: true },
-        { name: "status", type: "string", isIndexed: true },
-        { name: "subtotal", type: "number" },
-        { name: "total_amount", type: "number" },
-        { name: "notes", type: "string", isOptional: true },
-        { name: "created_at", type: "string", isIndexed: true },
-        { name: "updated_at", type: "string" },
-      ],
-    }),
-    tableSchema({
-      name: "food_order_items",
-      columns: [
-        { name: "order_id", type: "string", isIndexed: true },
-        {
-          name: "food_item_id",
-          type: "string",
-          isOptional: true,
-          isIndexed: true,
-        },
-        { name: "item_name_snapshot", type: "string" },
-        { name: "price_snapshot", type: "number" },
-        { name: "quantity", type: "number" },
-        { name: "line_total", type: "number" },
-      ],
-    }),
-  ],
+export const resources = sqliteTable("resources", {
+  id: text("id").primaryKey().notNull(),
+  name: text("name").notNull(),
+  type: text("type").notNull(),
+  ratePerHour: integer("rate_per_hour").notNull().default(0),
+  isActive: integer("is_active").notNull().default(1),
+  isMaintenance: integer("is_maintenance").notNull().default(0),
+  displayOrder: integer("display_order").notNull().default(0),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
 });
+
+export const sessions = sqliteTable("sessions", {
+  id: text("id").primaryKey().notNull(),
+  bookingNumber: text("booking_number").notNull(),
+  resourceId: text("resource_id").notNull(),
+  customerId: text("customer_id"),
+  customerName: text("customer_name"),
+  customerPhone: text("customer_phone"),
+  status: text("status").notNull().default("active"),
+  rateSnapshot: integer("rate_snapshot").notNull().default(0),
+  gracePeriodSnapshot: integer("grace_period_snapshot").notNull().default(12),
+  startedAt: text("started_at").notNull(),
+  endedAt: text("ended_at"),
+  totalPausedSeconds: integer("total_paused_seconds").notNull().default(0),
+  totalAmount: integer("total_amount").notNull().default(0),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const sessionPauses = sqliteTable("session_pauses", {
+  id: text("id").primaryKey().notNull(),
+  sessionId: text("session_id").notNull(),
+  pausedAt: text("paused_at").notNull(),
+  resumedAt: text("resumed_at"),
+});
+
+export type ResourceRow = typeof resources.$inferSelect;
+export type SessionRow = typeof sessions.$inferSelect;
+export type SessionPauseRow = typeof sessionPauses.$inferSelect;

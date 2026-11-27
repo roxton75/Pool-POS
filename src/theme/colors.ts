@@ -37,6 +37,7 @@ export const lightColors = {
   surface: "#FFFFFF",
   surfaceSecondary: "#E4E4E4",
   border: "#DDE2E3",
+  borderDark: "#7C7C7C", // Softer border
 
   text: {
     primary: "#111315",
