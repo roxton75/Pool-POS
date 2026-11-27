@@ -1,4 +1,4 @@
-import type { Database } from "@nozbe/watermelondb";
+import type { SQLiteDatabase } from "expo-sqlite";
 
 import { customerRepository } from "../repositories/customer.repository";
 import type {
@@ -14,18 +14,18 @@ function validateName(name: string) {
 }
 
 export const customerService = {
-  getAll(db: Database): Promise<Customer[]> {
+  getAll(db: SQLiteDatabase): Promise<Customer[]> {
     return customerRepository.getAll(db);
   },
 
-  async create(db: Database, input: CreateCustomerInput): Promise<Customer> {
+  async create(db: SQLiteDatabase, input: CreateCustomerInput): Promise<Customer> {
     validateName(input.name);
 
     return customerRepository.create(db, input);
   },
 
   async update(
-    db: Database,
+    db: SQLiteDatabase,
     id: string,
     input: UpdateCustomerInput,
   ): Promise<Customer> {
@@ -38,7 +38,7 @@ export const customerService = {
     return customerRepository.update(db, id, input);
   },
 
-  delete(db: Database, id: string): Promise<void> {
+  delete(db: SQLiteDatabase, id: string): Promise<void> {
     return customerRepository.delete(db, id);
   },
 };

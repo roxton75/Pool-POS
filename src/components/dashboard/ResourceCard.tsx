@@ -21,6 +21,7 @@ export type ResourceStatus =
   | "maintenance";
 
 export interface ResourceCardProps {
+  id: string;
   name: string;
   image: ImageSourcePropType;
   ratePerHour: number;

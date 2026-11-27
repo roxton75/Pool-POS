@@ -1,15 +1,15 @@
-import type { Database } from "@nozbe/watermelondb";
+import type { SQLiteDatabase } from "expo-sqlite";
 
 import { resourceRepository } from "../repositories/resource.repository";
 import type { Resource, UpdateResourceInput } from "../types/resource";
 
 export const resourceService = {
-  getAll(db: Database): Promise<Resource[]> {
+  getAll(db: SQLiteDatabase): Promise<Resource[]> {
     return resourceRepository.getAll(db);
   },
 
   async update(
-    db: Database,
+    db: SQLiteDatabase,
     id: string,
     input: UpdateResourceInput,
   ): Promise<Resource> {

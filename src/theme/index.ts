@@ -24,3 +24,4 @@ export { darkShadows, lightShadows, shadows } from "./shadows";
 export { duration, easing, timing, spring, transitions } from "./motion";
 
 export { ThemeProvider, useTheme } from "./ThemeProvider";
+export { useColorScheme } from "react-native";

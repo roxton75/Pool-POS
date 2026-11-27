@@ -12,7 +12,9 @@ export type ThemeTextColor =
   | "muted"
   | "accent"
   | "accentSecondary"
-  | "sage";
+  | "sage"
+  | "success"
+  | "error";
 
 export interface ThemedTextProps extends Omit<TextProps, "style"> {
   variant?: keyof typeof typography;
@@ -54,6 +56,16 @@ export function ThemedText({
       case "sage":
         darkColor = darkColors.sage;
         lightColor = lightColors.sage;
+        break;
+
+      case "success":
+        darkColor = darkColors.status.available;
+        lightColor = lightColors.status.available;
+        break;
+
+      case "error":
+        darkColor = darkColors.status.error;
+        lightColor = lightColors.status.error;
         break;
     }
 

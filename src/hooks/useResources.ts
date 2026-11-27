@@ -4,7 +4,7 @@ import { useDatabase } from "../database/DatabaseProvider";
 import { resourceService } from "../services/resource.service";
 import { useResourceStore } from "../stores/useResourceStore";
 import type { UpdateResourceInput } from "../types/resource";
-import ResourceModel from "../database/models/Resource";
+import type { SQLiteDatabase } from "expo-sqlite";
 
 function getErrorMessage(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
@@ -21,55 +21,26 @@ export function useResources() {
   const setLoading = useResourceStore((state) => state.setLoading);
   const setError = useResourceStore((state) => state.setError);
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    const subscription = db
-      .get<ResourceModel>("resources")
-      .query()
-      .observe()
-      .subscribe({
-        next: (records) => {
-          setResources(
-            records.map((record) => ({
-              id: record.id,
-              name: record.name,
-              type: record.type as
-                | "american_pool"
-                | "mini_snooker"
-                | "big_snooker"
-                | "ps5",
-              ratePerHour: record.ratePerHour,
-              isActive: record.isActive,
-              isMaintenance: record.isMaintenance,
-              displayOrder: record.displayOrder,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
-            })),
-          );
-
-          setLoading(false);
-          setError(null);
-        },
-        error: (err) => {
-          setError(getErrorMessage(err, "Failed to load resources."));
-          setLoading(false);
-        },
-      });
-
-    return () => subscription.unsubscribe();
-  }, [db, setResources, setLoading, setError]);
-
-  const refresh = useCallback(async () => {
+  const loadResources = useCallback(async (database: SQLiteDatabase) => {
     try {
+      setLoading(true);
       setError(null);
-      const records = await resourceService.getAll(db);
+      const records = await resourceService.getAll(database);
       setResources(records);
     } catch (err) {
-      setError(getErrorMessage(err, "Failed to refresh resources."));
+      setError(getErrorMessage(err, "Failed to load resources."));
+    } finally {
+      setLoading(false);
     }
-  }, [db, setResources, setError]);
+  }, [setResources, setLoading, setError]);
+
+  useEffect(() => {
+    loadResources(db);
+  }, [db, loadResources]);
+
+  const refresh = useCallback(async () => {
+    await loadResources(db);
+  }, [db, loadResources]);
 
   const updateResource = useCallback(
     async (id: string, input: UpdateResourceInput) => {

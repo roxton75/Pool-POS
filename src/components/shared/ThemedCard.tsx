@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "../../theme";
 
-export type ThemedCardVariant = "default" | "secondary" | "outlined";
+export type ThemedCardVariant = "default" | "secondary" | "outlined" | "success" | "error";
 
 export type ThemedCardProps = Omit<ViewProps, "style"> & {
   variant?: ThemedCardVariant;
@@ -37,15 +37,22 @@ export function ThemedCard({
   const { mode, progress } = useTheme();
 
   const animatedCardStyle = useAnimatedStyle(() => {
-    const darkBackground =
-      variant === "secondary"
-        ? darkColors.surfaceSecondary
-        : darkColors.surface;
+    let darkBackground: string;
+    let lightBackground: string;
 
-    const lightBackground =
-      variant === "secondary"
-        ? lightColors.surfaceSecondary
-        : lightColors.surface;
+    if (variant === "success") {
+      darkBackground = darkColors.status.available;
+      lightBackground = lightColors.status.available;
+    } else if (variant === "error") {
+      darkBackground = darkColors.status.error;
+      lightBackground = lightColors.status.error;
+    } else if (variant === "secondary") {
+      darkBackground = darkColors.surfaceSecondary;
+      lightBackground = lightColors.surfaceSecondary;
+    } else {
+      darkBackground = darkColors.surface;
+      lightBackground = lightColors.surface;
+    }
 
     return {
       backgroundColor:

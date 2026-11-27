@@ -1,4 +1,18 @@
-export { default as DatabaseProvider, useDatabase } from "./DatabaseProvider";
-export { database } from "./database";
-export { databaseSchema } from "./schema";
-export { databaseMigrations } from "./migrations";
+// export { default as DatabaseProvider, useDatabase, useDatabaseReady, useDatabaseError } from "./DatabaseProvider";
+// export { getDatabase, closeDatabase } from "./connection";
+export {
+  DatabaseProvider,
+  useDatabase,
+  useDatabaseReady,
+  useDatabaseError,
+} from "./DatabaseProvider";
+
+export { getDatabase, closeDatabase } from "./connection";
+
+export {
+  initializeDatabase,
+  runMigrations,
+  getCurrentVersion,
+  getTableList,
+  isDatabaseInitialized,
+} from "./migrationRunner";

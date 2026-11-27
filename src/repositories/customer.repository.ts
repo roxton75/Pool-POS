@@ -1,98 +1,118 @@
-import { Q, type Database } from "@nozbe/watermelondb";
+import type { SQLiteDatabase } from "expo-sqlite";
 
-import CustomerModel from "../database/models/Customer";
 import type {
   Customer,
   CreateCustomerInput,
   UpdateCustomerInput,
 } from "../types/customer";
 
-function mapCustomer(record: CustomerModel): Customer {
+function mapCustomerRow(row: {
+  id: string;
+  name: string;
+  phone: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}): Customer {
   return {
-    id: record.id,
-    name: record.name,
-    phone: record.phone,
-    notes: record.notes,
-    createdAt: record.createdAt,
-    updatedAt: record.updatedAt,
+    id: row.id,
+    name: row.name,
+    phone: row.phone,
+    notes: row.notes,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
   };
 }
 
 export const customerRepository = {
-  async getAll(db: Database): Promise<Customer[]> {
-    const records = await db
-      .get<CustomerModel>("customers")
-      .query(Q.sortBy("name", Q.asc))
-      .fetch();
+  async getAll(db: SQLiteDatabase): Promise<Customer[]> {
+    const rows = await db.getAllAsync<{
+      id: string;
+      name: string;
+      phone: string | null;
+      notes: string | null;
+      created_at: string;
+      updated_at: string;
+    }>("SELECT id, name, phone, notes, created_at, updated_at FROM customers ORDER BY name ASC");
 
-    return records.map(mapCustomer);
+    return rows.map(mapCustomerRow);
   },
 
-  async getById(db: Database, id: string): Promise<Customer | null> {
-    try {
-      const record = await db.get<CustomerModel>("customers").find(id);
-      return mapCustomer(record);
-    } catch {
-      return null;
-    }
+  async getById(db: SQLiteDatabase, id: string): Promise<Customer | null> {
+    const row = await db.getFirstAsync<{
+      id: string;
+      name: string;
+      phone: string | null;
+      notes: string | null;
+      created_at: string;
+      updated_at: string;
+    }>("SELECT id, name, phone, notes, created_at, updated_at FROM customers WHERE id = ?", [id]);
+
+    return row ? mapCustomerRow(row) : null;
   },
 
-  async create(db: Database, input: CreateCustomerInput): Promise<Customer> {
-    let created: Customer | null = null;
+  async create(db: SQLiteDatabase, input: CreateCustomerInput): Promise<Customer> {
+    const now = new Date().toISOString();
 
-    await db.write(async () => {
-      const record = await db
-        .get<CustomerModel>("customers")
-        .create((customer) => {
-          customer.name = input.name.trim();
-          customer.phone = input.phone?.trim() || null;
-          customer.notes = input.notes?.trim() || null;
+    const result = await db.runAsync(
+      "INSERT INTO customers (name, phone, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+      [input.name.trim(), input.phone?.trim() || null, input.notes?.trim() || null, now, now]
+    );
 
-          const now = new Date().toISOString();
-          customer.createdAt = now;
-          customer.updatedAt = now;
-        });
-
-      created = mapCustomer(record);
-    });
+    const created = await db.getFirstAsync<{
+      id: string;
+      name: string;
+      phone: string | null;
+      notes: string | null;
+      created_at: string;
+      updated_at: string;
+    }>("SELECT id, name, phone, notes, created_at, updated_at FROM customers WHERE id = ?", [result.lastInsertRowId.toString()]);
 
     if (!created) throw new Error("Unable to create customer.");
-    return created;
+    return mapCustomerRow(created);
   },
 
   async update(
-    db: Database,
+    db: SQLiteDatabase,
     id: string,
-    input: UpdateCustomerInput,
+    input: UpdateCustomerInput
   ): Promise<Customer> {
-    let updated: Customer | null = null;
+    const existing = await this.getById(db, id);
+    if (!existing) throw new Error("Customer not found.");
 
-    await db.write(async () => {
-      const record = await db.get<CustomerModel>("customers").find(id);
+    const updates: string[] = [];
+    const params: (string | number | null)[] = [];
 
-      await record.update((customer) => {
-        if (input.name !== undefined) customer.name = input.name.trim();
-        if (input.phone !== undefined) {
-          customer.phone = input.phone?.trim() || null;
-        }
-        if (input.notes !== undefined) {
-          customer.notes = input.notes?.trim() || null;
-        }
+    if (input.name !== undefined) {
+      updates.push("name = ?");
+      params.push(input.name.trim());
+    }
+    if (input.phone !== undefined) {
+      updates.push("phone = ?");
+      params.push(input.phone?.trim() || null);
+    }
+    if (input.notes !== undefined) {
+      updates.push("notes = ?");
+      params.push(input.notes?.trim() || null);
+    }
 
-        customer.updatedAt = new Date().toISOString();
-      });
+    if (updates.length === 0) return existing;
 
-      updated = mapCustomer(record);
-    });
+    updates.push("updated_at = ?");
+    params.push(new Date().toISOString());
+    params.push(id);
 
+    await db.runAsync(
+      `UPDATE customers SET ${updates.join(", ")} WHERE id = ?`,
+      params
+    );
+
+    const updated = await this.getById(db, id);
     if (!updated) throw new Error("Unable to update customer.");
     return updated;
   },
 
-  async delete(db: Database, id: string): Promise<void> {
-    await db.write(async () => {
-      const record = await db.get<CustomerModel>("customers").find(id);
-      await record.destroyPermanently();
-    });
+  async delete(db: SQLiteDatabase, id: string): Promise<void> {
+    await db.runAsync("DELETE FROM customers WHERE id = ?", [id]);
   },
 };

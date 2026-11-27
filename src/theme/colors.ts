@@ -2,7 +2,8 @@ export const darkColors = {
   background: "#111111",
   surface: "#222222",
   surfaceSecondary: "#303030",
-  border: "#272C2E00", // Softer border
+  border: "#3636367E", // Softer border
+  borderDark: "#3B3B3B", // Softer border
 
   text: {
     primary: "#F4F5F4",

@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from "react";
 
 import { useDatabase } from "../database/DatabaseProvider";
-import CustomerModel from "../database/models/Customer";
 import { customerService } from "../services/customer.service";
 import { useCustomerStore } from "../stores/useCustomerStore";
 
@@ -9,6 +8,7 @@ import type {
   CreateCustomerInput,
   UpdateCustomerInput,
 } from "../types/customer";
+import type { SQLiteDatabase } from "expo-sqlite";
 
 function getErrorMessage(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
@@ -25,46 +25,26 @@ export function useCustomers() {
   const setLoading = useCustomerStore((state) => state.setLoading);
   const setError = useCustomerStore((state) => state.setError);
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    const subscription = db
-      .get<CustomerModel>("customers")
-      .query()
-      .observe()
-      .subscribe({
-        next: (records) => {
-          setCustomers(
-            records.map((record) => ({
-              id: record.id,
-              name: record.name,
-              phone: record.phone,
-              notes: record.notes,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
-            })),
-          );
-          setLoading(false);
-        },
-        error: (err) => {
-          setError(getErrorMessage(err, "Failed to load customers."));
-          setLoading(false);
-        },
-      });
-
-    return () => subscription.unsubscribe();
-  }, [db, setCustomers, setLoading, setError]);
-
-  const refresh = useCallback(async () => {
+  const loadCustomers = useCallback(async (database: SQLiteDatabase) => {
     try {
+      setLoading(true);
       setError(null);
-      const records = await customerService.getAll(db);
+      const records = await customerService.getAll(database);
       setCustomers(records);
     } catch (err) {
-      setError(getErrorMessage(err, "Failed to refresh customers."));
+      setError(getErrorMessage(err, "Failed to load customers."));
+    } finally {
+      setLoading(false);
     }
-  }, [db, setCustomers, setError]);
+  }, [setCustomers, setLoading, setError]);
+
+  useEffect(() => {
+    loadCustomers(db);
+  }, [db, loadCustomers]);
+
+  const refresh = useCallback(async () => {
+    await loadCustomers(db);
+  }, [db, loadCustomers]);
 
   const createCustomer = useCallback(
     (input: CreateCustomerInput) => customerService.create(db, input),
