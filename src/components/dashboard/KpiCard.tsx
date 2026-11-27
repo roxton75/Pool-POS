@@ -22,8 +22,9 @@
 //   description,
 //   icon,
 // }: KpiCardProps) {
-//   const { progress, colors } = useTheme();
+//   const { progress, mode } = useTheme();
 
+//   // Animated icon container background
 //   const iconBoxAnimatedStyle = useAnimatedStyle(() => ({
 //     backgroundColor: interpolateColor(
 //       progress.value,
@@ -32,7 +33,8 @@
 //     ),
 //   }));
 
-//   const iconColor = colors.text.primary;
+//   // Theme-specific icon colors
+//   const iconColor = mode === "dark" ? darkColors.sage : lightColors.sage;
 
 //   return (
 //     <ThemedCard variant="default" padding="md" radius="lg" style={styles.card}>
@@ -62,7 +64,6 @@
 //   card: {
 //     flex: 1,
 //     height: 120,
-//     // minWidth: 145,
 //   },
 //   top: {
 //     flexDirection: "row",
@@ -88,6 +89,8 @@ import Reanimated, {
 } from "react-native-reanimated";
 
 import { ThemedCard, ThemedText } from "../shared";
+import AnimatedCounter from "../shared/AnimatedCounter";
+
 import { darkColors, lightColors, spacing, useTheme } from "../../theme";
 
 interface KpiCardProps {
@@ -95,6 +98,7 @@ interface KpiCardProps {
   value: string;
   description: string;
   icon: ReactElement<{ color?: string; size?: number }>;
+  ready: boolean;
 }
 
 export default function KpiCard({
@@ -102,10 +106,10 @@ export default function KpiCard({
   value,
   description,
   icon,
+  ready,
 }: KpiCardProps) {
   const { progress, mode } = useTheme();
 
-  // Animated icon container background
   const iconBoxAnimatedStyle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(
       progress.value,
@@ -114,7 +118,6 @@ export default function KpiCard({
     ),
   }));
 
-  // Theme-specific icon colors
   const iconColor = mode === "dark" ? darkColors.sage : lightColors.sage;
 
   return (
@@ -132,7 +135,7 @@ export default function KpiCard({
         </Reanimated.View>
       </View>
 
-      <ThemedText variant="display">{value}</ThemedText>
+      <AnimatedCounter value={value} ready={ready} variant="display" />
 
       <ThemedText variant="caption" color="muted">
         {description}

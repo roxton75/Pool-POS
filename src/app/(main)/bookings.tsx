@@ -140,6 +140,15 @@ export default function BookingsScreen() {
     (session) => session.status === "paused",
   ).length;
 
+  const availableCount = resources.filter(
+    (resource) =>
+      resource.isActive &&
+      !resource.isMaintenance &&
+      !sessions.some((session) => session.resourceId === resource.id),
+  ).length;
+
+  const totalCount = resources.length;
+
   // Billing refresh
   const refreshBilling = useCallback(async () => {
     try {
@@ -321,12 +330,14 @@ export default function BookingsScreen() {
         />
 
         <BookingStats
-          available={availableResources.length}
+          available={availableCount}
           running={runningCount}
           paused={pausedCount}
-          total={resources.length}
+          total={totalCount}
+          ready={
+            resourceQuery.data !== undefined && sessionQuery.data !== undefined
+          }
         />
-
         {error ? (
           <View style={styles.error}>
             {/* <ThemedText color="error">{error}</ThemedText> */}
